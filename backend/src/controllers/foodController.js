@@ -62,7 +62,7 @@ export const analyzeFood = async (req, res) => {
         formData.append("file", fs.createReadStream(req.file.path));
 
         const calorieResponse = await axios.post(
-            "http://127.0.0.1:8000/predict",
+            process.env.AI_SERVER_URL + "/predict",
             formData,
             { headers: formData.getHeaders() }
         );
