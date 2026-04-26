@@ -12,20 +12,32 @@ const detectFoodItems = async (imagePath, mimeType) => {
     const base64Image = imageBuffer.toString("base64");
 
     const prompt = `
-        Analyze this meal image.
-
+        Analyze this image carefully.
+        
         Return JSON only in this exact shape:
+        
+        If the image does NOT contain edible food:
         {
-            "foods": [
-                {
-                "name": "food name",
-                "percentage": number
-                }
-            ]
+          "isFood": false,
+          "foods": []
         }
-
+        
+        If the image contains edible food:
+        {
+          "isFood": true,
+          "foods": [
+            {
+              "name": "food name",
+              "percentage": number
+            }
+          ]
+        }
+        
         Rules:
-        - Identify visible food items only.
+        - First decide if the image contains edible food.
+        - Do not count clothes, objects, plates, tables, utensils, packages, or random items as food.
+        - If no clear edible food is visible, return isFood false.
+        - If food is visible, identify visible edible food items only.
         - Percentages must sum to 100.
         - No markdown.
         - No explanation.
@@ -73,6 +85,16 @@ export const analyzeFood = async (req, res) => {
 
         try {
             detectedFoods = await detectFoodItems(req.file.path, req.file.mimetype);
+            if (!detectedFoods.isFood) {
+              return res.json({
+                imageName: req.file.originalname,
+                isFood: false,
+                message: "This doesn't look like food 👀",
+                items: [],
+                totalCalories: 0,
+                range: [0, 0],
+              });
+            }
         } catch (error) {
             console.error("Gemini error:", error.message);
 
@@ -98,6 +120,7 @@ export const analyzeFood = async (req, res) => {
 
         res.json({
             imageName: req.file.originalname,
+            isFood: true,
             items,
             totalCalories,
             range: [
