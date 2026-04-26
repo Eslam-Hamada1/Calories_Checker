@@ -42,7 +42,15 @@ function ResultCard({ result }) {
         </div>
       </div>
 
-      {/* 🔥 Food items */}
+    {/* 🔥 Non-food message */}
+    {result?.isFood === false ? (
+      <div className="rounded-2xl bg-yellow-100 p-6 text-center text-yellow-800">
+        <p className="text-lg font-semibold">
+          {result.message || "This doesn't look like food 👀"}
+        </p>
+      </div>
+    ) : (
+      /* 🔥 Food items */
       <div className="space-y-3">
         {result.items.map((item, index) => (
           <div
@@ -53,20 +61,18 @@ function ResultCard({ result }) {
               <h3 className="font-bold text-slate-800 capitalize">
                 {item.name}
               </h3>
-
+    
               <span className="rounded-full bg-white px-3 py-1 text-sm font-semibold text-emerald-700">
                 {item.calories} kcal
               </span>
             </div>
-
-            {/* 🔥 Percentage */}
+    
             {item.percentage && (
               <p className="mt-2 text-sm text-slate-500">
                 Estimated share: {item.percentage}%
               </p>
             )}
-
-            {/* 🔥 Progress bar */}
+    
             <div className="mt-3 h-2 rounded-full bg-slate-200">
               <div
                 className="h-2 rounded-full bg-emerald-500"
@@ -75,8 +81,7 @@ function ResultCard({ result }) {
                 }}
               ></div>
             </div>
-
-            {/* 🔥 Range */}
+    
             {item.range && (
               <p className="mt-2 text-sm text-slate-500">
                 Range: {item.range[0]} – {item.range[1]} kcal
@@ -85,6 +90,7 @@ function ResultCard({ result }) {
           </div>
         ))}
       </div>
+    )}
 
       {/* 🔥 Footer note */}
       <p className="mt-6 rounded-2xl bg-amber-50 p-4 text-sm text-amber-700">
