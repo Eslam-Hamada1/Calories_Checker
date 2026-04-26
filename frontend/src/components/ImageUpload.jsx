@@ -1,14 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { analyzeFoodImage } from "../services/foodApi";
 
 function ImageUpload({ setResult }) {
     const [image, setImage] = useState(null);
     const [preview, setPreview] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [messageIndex, setMessageIndex] = useState(0);
+
+    const messages = [
+        "Analyzing your meal...",
+        "Identifying ingredients...",
+        "Estimating calories...",
+    ];
+
+    useEffect(() => {
+        if (!loading) return;
+
+        const interval = setInterval(() => {
+            setMessageIndex((prev) => (prev + 1) % messages.length);
+        }, 1500);
+
+        return () => clearInterval(interval);
+    }, [loading, messages.length]);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
-
         if (!file) return;
 
         setImage(file);
@@ -40,11 +56,22 @@ function ImageUpload({ setResult }) {
         <div className="rounded-3xl border border-emerald-100 bg-white p-6 shadow-xl shadow-emerald-100/60">
             <h2 className="text-2xl font-bold">Upload Meal</h2>
             <p className="mt-2 text-sm text-slate-500">Choose a clear image of your food plate.</p>
+
             <form onSubmit={handleSubmit} className="mt-6 space-y-5">
                 <label className="flex min-h-56 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-emerald-300 bg-emerald-50/60 p-6 text-center transition hover:bg-emerald-50">
-                    <input type="file" accept="image/*" onChange={handleImageChange} className="hidden"/>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="hidden"
+                    />
+
                     {preview ? (
-                        <img src={preview} alt="Food preview" className="max-h-64 rounded-2xl object-cover shadow-md"/>
+                        <img
+                            src={preview}
+                            alt="Food preview"
+                            className="max-h-64 rounded-2xl object-cover shadow-md"
+                        />
                     ) : (
                         <div>
                             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-2xl">🍽️</div>
@@ -53,12 +80,25 @@ function ImageUpload({ setResult }) {
                         </div>
                     )}
                 </label>
+
                 {image && (
                     <p className="rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-600">Selected: <span className="font-medium">{image.name}</span></p>
                 )}
 
-                <button type="submit" disabled={loading} className="w-full rounded-2xl bg-emerald-600 px-5 py-3 font-semibold text-white shadow-lg shadow-emerald-200 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60">
-                {loading ? "Analyzing..." : "Analyze Food"}
+                {loading && (
+                    <p className="text-sm text-emerald-600 text-center animate-pulse">{messages[messageIndex]}</p>
+                )}
+
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full rounded-2xl bg-emerald-600 px-5 py-3 font-semibold text-white shadow-lg shadow-emerald-200 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60 flex items-center justify-center gap-2"
+                >
+                {loading && (
+                    <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+                )}
+
+                {loading ? "Working..." : "Analyze Food"}
                 </button>
             </form>
         </div>
