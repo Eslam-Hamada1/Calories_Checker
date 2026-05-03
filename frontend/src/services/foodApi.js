@@ -1,12 +1,11 @@
-import axios from "axios";
+import api from "./api";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+export async function searchFoods(search = "") {
+  const response = await api.get(`/foods?search=${search}`);
+  return response.data;
+}
 
-export const analyzeFoodImage = async (imageFile) => {
-    const formData = new FormData();
-    formData.append("image", imageFile);
-
-    const response = await axios.post(`${API_URL}/api/food/analyze`, formData);
-
-    return response.data;
-};
+export async function createFood(foodData) {
+  const response = await api.post("/foods", foodData);
+  return response.data;
+}
