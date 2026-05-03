@@ -1,1 +1,474 @@
 @import "tailwindcss";
+
+/* =========================
+   THEME VARIABLES
+========================= */
+
+:root {
+  --app-bg: #f4f7f5;
+  --app-card: #ffffff;
+  --app-soft: #f8fafc;
+  --app-text: #1f2937;
+  --app-muted: #6b7280;
+  --app-border: #e5e7eb;
+  --app-navbar: #198754;
+  --app-navbar-end: #16a34a;
+}
+
+.theme-light {
+  --app-bg: #f4f7f5;
+  --app-card: #ffffff;
+  --app-soft: #f8fafc;
+  --app-text: #1f2937;
+  --app-muted: #6b7280;
+  --app-border: #e5e7eb;
+  --app-navbar: #198754;
+  --app-navbar-end: #16a34a;
+}
+
+.theme-dark {
+  --app-bg: #07111f;
+  --app-card: #0f1a2b;
+  --app-soft: #132238;
+  --app-text: #f3f4f6;
+  --app-muted: #aeb8c7;
+  --app-border: #24364f;
+  --app-navbar: #0f172a;
+  --app-navbar-end: #0f766e;
+}
+
+/* =========================
+   GLOBAL
+========================= */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--app-bg);
+  color: var(--app-text);
+  font-family: Arial, sans-serif;
+  cursor: default;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* Hide annoying caret outside real inputs */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+div,
+label,
+td,
+th {
+  caret-color: transparent;
+}
+
+input,
+textarea,
+[contenteditable="true"] {
+  caret-color: auto;
+  cursor: text;
+}
+
+::selection {
+  background: rgba(25, 135, 84, 0.25);
+}
+
+.theme-dark ::selection {
+  background: rgba(20, 184, 166, 0.35);
+}
+
+/* =========================
+   LAYOUT
+========================= */
+
+.app-page {
+  min-height: calc(100vh - 56px);
+  padding-top: 28px;
+  padding-bottom: 40px;
+  background: var(--app-bg);
+  color: var(--app-text);
+}
+
+.page-title {
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.page-subtitle {
+  color: var(--app-muted);
+  margin-bottom: 0;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+.app-navbar {
+  background: linear-gradient(90deg, var(--app-navbar), var(--app-navbar-end));
+}
+
+.theme-dark .app-navbar {
+  border-bottom: 1px solid #1f2937;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+}
+
+.navbar .nav-link {
+  border-radius: 999px;
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+  margin: 0 2px;
+}
+
+.navbar .nav-link.active {
+  background: rgba(255, 255, 255, 0.18);
+  color: white !important;
+  font-weight: 700;
+}
+
+/* =========================
+   CARDS / SECTIONS
+========================= */
+
+.card {
+  background-color: var(--app-card) !important;
+  color: var(--app-text) !important;
+  border-color: var(--app-border) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card .card {
+  background-color: var(--app-soft) !important;
+  color: var(--app-text) !important;
+  border-color: var(--app-border) !important;
+}
+
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1) !important;
+}
+
+.theme-dark .card-hover:hover {
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45) !important;
+}
+
+.bg-white,
+.bg-light {
+  background-color: var(--app-soft) !important;
+  color: var(--app-text) !important;
+}
+
+.rounded-4.bg-white,
+.rounded-4.bg-light {
+  background-color: var(--app-soft) !important;
+  color: var(--app-text) !important;
+}
+
+.text-muted {
+  color: var(--app-muted) !important;
+}
+
+.border,
+.border-top,
+.border-end,
+.border-bottom,
+.border-start {
+  border-color: var(--app-border) !important;
+}
+
+/* =========================
+   TEXT INSIDE DARK MODE
+========================= */
+
+.theme-dark h1,
+.theme-dark h2,
+.theme-dark h3,
+.theme-dark h4,
+.theme-dark h5,
+.theme-dark h6,
+.theme-dark p,
+.theme-dark span,
+.theme-dark div,
+.theme-dark strong,
+.theme-dark small,
+.theme-dark label,
+.theme-dark td,
+.theme-dark th {
+  color: inherit;
+}
+
+.theme-dark .card h1,
+.theme-dark .card h2,
+.theme-dark .card h3,
+.theme-dark .card h4,
+.theme-dark .card h5,
+.theme-dark .card h6,
+.theme-dark .card p,
+.theme-dark .card span,
+.theme-dark .card div,
+.theme-dark .card strong,
+.theme-dark .card small,
+.theme-dark .card label,
+.theme-dark .card td,
+.theme-dark .card th {
+  color: var(--app-text) !important;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn {
+  border-radius: 12px;
+}
+
+.logout-btn {
+  border-radius: 999px !important;
+  font-weight: 700;
+}
+
+.theme-toggle-btn {
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+  border-radius: 999px !important;
+  padding: 6px 12px !important;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.theme-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+  color: white !important;
+}
+
+.theme-dark .btn-outline-secondary {
+  color: #d1d5db !important;
+  border-color: #4b5563 !important;
+}
+
+.theme-dark .btn-outline-secondary:hover {
+  background-color: #374151 !important;
+  color: white !important;
+}
+
+.theme-dark .btn-outline-success {
+  color: #34d399 !important;
+  border-color: #10b981 !important;
+}
+
+.theme-dark .btn-outline-success:hover {
+  background-color: #10b981 !important;
+  color: white !important;
+}
+
+.theme-dark .btn-outline-danger {
+  color: #f87171 !important;
+  border-color: #ef4444 !important;
+}
+
+.theme-dark .btn-outline-danger:hover {
+  background-color: #ef4444 !important;
+  color: white !important;
+}
+
+/* =========================
+   FORMS
+========================= */
+
+.form-control,
+.form-select {
+  border-radius: 12px;
+}
+
+.theme-dark .form-control,
+.theme-dark .form-select {
+  background-color: #0b1627 !important;
+  color: var(--app-text) !important;
+  border-color: var(--app-border) !important;
+}
+
+.theme-dark .form-control:focus,
+.theme-dark .form-select:focus {
+  background-color: #0b1627 !important;
+  color: var(--app-text) !important;
+  border-color: #14b8a6 !important;
+  box-shadow: 0 0 0 0.2rem rgba(20, 184, 166, 0.2) !important;
+}
+
+.theme-dark .form-control::placeholder {
+  color: #8ea0b8 !important;
+}
+
+.theme-dark .form-text {
+  color: var(--app-muted) !important;
+}
+
+/* =========================
+   TABLES
+========================= */
+
+.table {
+  --bs-table-bg: transparent;
+}
+
+.table th {
+  color: var(--app-muted);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.theme-dark .table-responsive {
+  background: transparent !important;
+}
+
+.theme-dark .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--app-text);
+  --bs-table-border-color: var(--app-border);
+  --bs-table-hover-bg: #16253a;
+}
+
+.theme-dark .table thead th {
+  color: #dbe4ee !important;
+}
+
+.theme-dark .table tbody td {
+  color: var(--app-text) !important;
+}
+
+/* =========================
+   MODALS
+========================= */
+
+.modal-content {
+  border-radius: 18px;
+}
+
+.theme-dark .modal-content {
+  background-color: var(--app-card) !important;
+  color: var(--app-text) !important;
+  border: 1px solid var(--app-border) !important;
+}
+
+.theme-dark .modal-header,
+.theme-dark .modal-footer {
+  border-color: var(--app-border) !important;
+}
+
+.theme-dark .btn-close {
+  filter: invert(1);
+}
+
+/* =========================
+   BADGES / PROGRESS
+========================= */
+
+.badge {
+  border-radius: 999px;
+}
+
+.progress {
+  border-radius: 999px;
+  height: 16px;
+  background-color: var(--app-soft);
+}
+
+.progress-bar {
+  border-radius: 999px;
+}
+
+/* =========================
+   TOASTS
+========================= */
+
+.toast {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.theme-dark .toast {
+  background-color: var(--app-card);
+  color: var(--app-text);
+  border: 1px solid var(--app-border);
+}
+
+.theme-dark .toast-header {
+  background-color: var(--app-soft);
+  color: var(--app-text);
+  border-color: var(--app-border);
+}
+
+/* =========================
+   DROPDOWNS
+========================= */
+
+.theme-dark .dropdown-menu {
+  background-color: var(--app-card);
+  border-color: var(--app-border);
+}
+
+.theme-dark .dropdown-item {
+  color: var(--app-text);
+}
+
+.theme-dark .dropdown-item:hover {
+  background-color: var(--app-soft);
+}
+
+/* =========================
+   AUTH PAGES
+========================= */
+
+.theme-dark .bg-success {
+  background-color: #0f766e !important;
+}
+
+.theme-dark .text-success {
+  color: #14b8a6 !important;
+}
+
+/* AI result macro boxes */
+.macro-box {
+  background-color: #ffffff;
+  color: #1f2937;
+  border: 1px solid #e5e7eb;
+}
+
+.macro-box small {
+  color: #6b7280 !important;
+}
+
+.macro-box .fw-bold {
+  color: #111827 !important;
+}
+
+.theme-dark .macro-box {
+  background-color: #0b1627 !important;
+  color: #f3f4f6 !important;
+  border: 1px solid #24364f !important;
+}
+
+.theme-dark .macro-box small {
+  color: #aeb8c7 !important;
+}
+
+.theme-dark .macro-box .fw-bold {
+  color: #f3f4f6 !important;
+}

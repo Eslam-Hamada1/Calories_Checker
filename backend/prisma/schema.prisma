@@ -1,0 +1,180 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+}
+
+enum DietGoal {
+  LOSE_WEIGHT
+  MAINTAIN
+  GAIN_MUSCLE
+  CUSTOM
+}
+
+enum FoodSource {
+  MANUAL
+  AI
+  EXTERNAL
+}
+
+model User {
+  id           String @id @default(cuid())
+  name         String
+  email        String @unique
+  passwordHash String
+
+  profile       UserProfile?
+  logs          DailyLog[]
+  aiPredictions AiPrediction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  avatarUrl String?
+
+  age      Int?
+  gender   String?
+  heightCm Float?
+  weightKg Float?
+
+  dietGoal         DietGoal @default(MAINTAIN)
+  dailyCalorieGoal Int      @default(2000)
+
+  dailyProteinGoal Float?
+  dailyCarbGoal    Float?
+  dailyFatGoal     Float?
+
+  preferences Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Food {
+  id   String @id @default(cuid())
+  name String
+
+  brand  String?
+  source FoodSource @default(MANUAL)
+
+  servingSize Float  @default(1)
+  servingUnit String @default("serving")
+
+  calories Float
+  proteinG Float @default(0)
+  carbsG   Float @default(0)
+  fatG     Float @default(0)
+  fiberG   Float @default(0)
+
+  logEntries        LogEntry[]
+  aiPredictionItems AiPredictionItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+}
+
+model DailyLog {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  date DateTime @db.Date
+
+  entries LogEntry[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, date])
+}
+
+model LogEntry {
+  id         String   @id @default(cuid())
+  dailyLogId String
+  dailyLog   DailyLog @relation(fields: [dailyLogId], references: [id], onDelete: Cascade)
+
+  foodId String?
+  food   Food? @relation(fields: [foodId], references: [id])
+
+  customName String?
+
+  mealType MealType @default(SNACK)
+
+  servings    Float  @default(1)
+  servingUnit String @default("serving")
+
+  calories Float
+  proteinG Float @default(0)
+  carbsG   Float @default(0)
+  fatG     Float @default(0)
+  fiberG   Float @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AiPrediction {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  mealName String?
+
+  imagePath     String?
+  totalCalories Float
+  totalMin      Float?
+  totalMax      Float?
+
+  proteinG Float @default(0)
+  carbsG   Float @default(0)
+  fatG     Float @default(0)
+  fiberG   Float @default(0)
+
+  rawResponse Json?
+
+  items AiPredictionItem[]
+
+  createdAt DateTime @default(now())
+}
+
+model AiPredictionItem {
+  id           String       @id @default(cuid())
+  predictionId String
+  prediction   AiPrediction @relation(fields: [predictionId], references: [id], onDelete: Cascade)
+
+  foodId String?
+  food   Food? @relation(fields: [foodId], references: [id])
+
+  name       String
+  confidence Float?
+  percentage Float?
+
+  calories   Float
+  calorieMin Float?
+  calorieMax Float?
+
+  proteinG Float?
+  carbsG   Float?
+  fatG     Float?
+  fiberG   Float?
+
+  createdAt DateTime @default(now())
+}
