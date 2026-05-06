@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Badge,
   Button,
@@ -18,6 +18,8 @@ import {
 } from "../services/aiApi";
 
 import { useToast } from "../context/ToastContext";
+import { isMobileDevice } from "../utils/deviceDetect";
+import CameraCapture from "../components/CameraCapture";
 
 function getTodayDate() {
   const now = new Date();
@@ -32,6 +34,8 @@ function AiUpload() {
   const { showToast } = useToast();
 
   const [analysisMode, setAnalysisMode] = useState("image");
+  const [showCamera, setShowCamera] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
@@ -49,6 +53,11 @@ function AiUpload() {
 
   const [addedItemIds, setAddedItemIds] = useState([]);
   const [wholeMealAdded, setWholeMealAdded] = useState(false);
+
+  // Check if mobile on component mount
+  useEffect(() => {
+    setIsMobile(isMobileDevice());
+  }, []);
 
   function resetResultState() {
     setPrediction(null);
@@ -71,6 +80,13 @@ function AiUpload() {
 
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
+  }
+
+  function handleCameraCapture(file, previewDataUrl) {
+    setImageFile(file);
+    setPreviewUrl(previewDataUrl);
+    setShowCamera(false);
+    resetResultState();
   }
 
   async function handleAnalyzeImage(e) {
@@ -239,6 +255,21 @@ function AiUpload() {
                     Image
                   </Button>
 
+                  {isMobile && (
+                    <Button
+                      variant={
+                        analysisMode === "camera" ? "success" : "outline-success"
+                      }
+                      onClick={() => {
+                        setAnalysisMode("camera");
+                        resetResultState();
+                        setShowCamera(true);
+                      }}
+                    >
+                      📷 Camera
+                    </Button>
+                  )}
+
                   <Button
                     variant={
                       analysisMode === "text" ? "success" : "outline-success"
@@ -250,7 +281,15 @@ function AiUpload() {
                 </ButtonGroup>
               </div>
 
-              {analysisMode === "image" ? (
+              {analysisMode === "camera" && showCamera ? (
+                <CameraCapture
+                  onCapture={handleCameraCapture}
+                  onCancel={() => {
+                    setShowCamera(false);
+                    setAnalysisMode("image");
+                  }}
+                />
+              ) : analysisMode === "image" ? (
                 <Form onSubmit={handleAnalyzeImage}>
                   <Form.Group className="mb-3">
                     <Form.Label>Food Image</Form.Label>
@@ -331,7 +370,7 @@ function AiUpload() {
                 <div className="text-center mt-4">
                   <Spinner animation="border" variant="success" />
                   <p className="text-muted mt-3 mb-0">
-                    {analysisMode === "image"
+                    {analysisMode === "image" || analysisMode === "camera"
                       ? "We are analyzing your meal... Remember to drink water while waiting!"
                       : "We are estimating calories and macros... Feel free to stretch your legs while we work on it!"}
                   </p>
