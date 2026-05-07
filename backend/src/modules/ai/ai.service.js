@@ -35,6 +35,29 @@ function hasDetectedFood(geminiData) {
   return hasRealItem;
 }
 
+function hasDetectedFoodText(geminiData) {
+  if (geminiData?.isFoodText === false) {
+    return false;
+  }
+
+  if (!Array.isArray(geminiData?.items) || geminiData.items.length === 0) {
+    return false;
+  }
+
+  const hasRealItem = geminiData.items.some((item) => {
+    const name = String(item.name || "").toLowerCase();
+
+    return (
+      name &&
+      !name.includes("no food") &&
+      !name.includes("unknown") &&
+      !name.includes("not detected")
+    );
+  });
+
+  return hasRealItem;
+}
+
 async function analyzeWithCalorieClip(filePath) {
   const formData = new FormData();
 
@@ -297,6 +320,12 @@ export async function analyzeMealText(userId, mealText) {
   } catch (error) {
     console.log("Gemini text analysis failed:", error.response?.data || error.message);
     throw new Error("Failed to analyze meal text");
+  }
+
+  if (!hasDetectedFoodText(geminiData)) {
+    const error = new Error("No food detected in this meal description");
+    error.statusCode = 422;
+    throw error;
   }
 
   const finalResult = normalizeTextMealAnalysis(geminiData);

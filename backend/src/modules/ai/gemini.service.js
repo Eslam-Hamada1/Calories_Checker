@@ -101,14 +101,6 @@ Return this exact shape:
       "carbsG": 0,
       "fatG": 6,
       "fiberG": 0
-    },
-    {
-      "name": "White Rice",
-      "percentage": 40,
-      "proteinG": 4,
-      "carbsG": 45,
-      "fatG": 1,
-      "fiberG": 1
     }
   ]
 }
@@ -147,12 +139,31 @@ export async function analyzeMealTextWithGemini(mealText) {
   const prompt = `
 You are a nutrition analysis assistant.
 
-Analyze this meal text and return JSON only.
+Analyze this user text and return JSON only.
 
-Meal:
+User text:
 "${mealText}"
 
-Important:
+Very important:
+- First decide if the text clearly describes food, drink, a meal, ingredients, or something edible.
+- If the text does NOT describe food or drink, do NOT estimate calories, macros, or food items.
+- If no food or drink is detected, return exactly:
+{
+  "isFoodText": false,
+  "mealName": "No food detected",
+  "items": []
+}
+
+Examples of non-food text:
+- "my shirt is blue"
+- "I went to school"
+- "laptop and mouse"
+- "hello how are you"
+- "car engine oil"
+- "football match"
+
+If the text contains food or drink:
+- Return "isFoodText": true.
 - Estimate calories and macros based on the quantities provided.
 - If quantity is missing, make a reasonable estimate.
 - Return calories, protein, carbs, fat, and fiber for each item.
@@ -160,8 +171,9 @@ Important:
 - Do not include markdown.
 - Return JSON only.
 
-Return exactly this JSON shape:
+Return exactly this JSON shape for food:
 {
+  "isFoodText": true,
   "mealName": "Chicken with rice",
   "items": [
     {
