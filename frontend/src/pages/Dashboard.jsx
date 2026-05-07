@@ -81,10 +81,6 @@ function Dashboard() {
             Welcome back, {user?.name}. Here is your nutrition summary for today.
           </p>
         </div>
-
-        <Button variant="outline-success" onClick={loadDashboard}>
-          Refresh
-        </Button>
       </div>
 
       <Row className="g-4 mb-4">

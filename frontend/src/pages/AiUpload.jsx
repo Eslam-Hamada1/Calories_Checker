@@ -258,6 +258,7 @@ function AiUpload() {
                       type="file"
                       accept="image/*"
                       onChange={handleImageChange}
+                      capture="environment"
                     />
                   </Form.Group>
 
