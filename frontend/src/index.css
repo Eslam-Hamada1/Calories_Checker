@@ -99,10 +99,9 @@ textarea,
 ========================= */
 
 .app-page {
-  min-height: calc(100vh - 64px);
+  min-height: calc(100dvh - 64px);
   padding-top: 28px;
-  padding-bottom: 40px;
-  box-sizing: border-box;
+  padding-bottom: 24px;
   background: var(--app-bg);
   color: var(--app-text);
 }
@@ -451,7 +450,10 @@ textarea,
   color: #14b8a6 !important;
 }
 
-/* AI result macro boxes */
+/* =========================
+   AI RESULT MACRO BOXES
+========================= */
+
 .macro-box {
   background-color: #ffffff;
   color: #1f2937;
@@ -480,14 +482,16 @@ textarea,
   color: #f3f4f6 !important;
 }
 
-/* FOOTER */
+/* =========================
+   FOOTER
+========================= */
 
 .app-footer {
   background: var(--app-card);
   color: var(--app-text);
   border-top: 1px solid var(--app-border);
-  padding: 48px 0 18px;
-  margin-top: 48px;
+  padding: 44px 0 18px;
+  margin-top: 0;
 }
 
 .footer-info-item {
@@ -574,20 +578,63 @@ textarea,
   background: #132238;
 }
 
+/* =========================
+   MOBILE FOOTER
+========================= */
+
 @media (max-width: 768px) {
+  .app-page {
+    padding-bottom: 18px;
+  }
+
   .app-footer {
-    text-align: center;
+    text-align: left;
+    padding: 34px 0 18px;
   }
 
   .footer-info-item {
-    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .footer-icon {
+    width: 54px;
+    height: 54px;
+    font-size: 22px;
+  }
+
+  .footer-info-item h6 {
+    font-size: 18px;
+    margin-bottom: 3px;
+  }
+
+  .footer-info-item p {
+    font-size: 16px;
+    word-break: break-word;
+  }
+
+  .footer-title {
+    text-align: center;
+    margin-top: 28px;
   }
 
   .footer-text {
+    text-align: center;
     margin-inline: auto;
+    font-size: 16px;
+    line-height: 1.7;
   }
 
   .footer-socials {
     justify-content: center;
+  }
+
+  .footer-bottom {
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.7;
   }
 }
