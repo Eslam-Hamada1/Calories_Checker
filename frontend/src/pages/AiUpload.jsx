@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Badge,
   Button,
@@ -31,6 +31,11 @@ function getTodayDate() {
 function AiUpload() {
   const { showToast } = useToast();
 
+  const galleryInputRef = useRef(null);
+  const cameraInputRef = useRef(null);
+
+  const [isMobile, setIsMobile] = useState(false);
+
   const [analysisMode, setAnalysisMode] = useState("image");
 
   const [imageFile, setImageFile] = useState(null);
@@ -50,6 +55,28 @@ function AiUpload() {
   const [addedItemIds, setAddedItemIds] = useState([]);
   const [wholeMealAdded, setWholeMealAdded] = useState(false);
 
+  useEffect(() => {
+    function checkMobile() {
+      const hasTouch = window.matchMedia("(pointer: coarse)").matches;
+      const smallScreen = window.matchMedia("(max-width: 768px)").matches;
+
+      setIsMobile(hasTouch && smallScreen);
+    }
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
   function resetResultState() {
     setPrediction(null);
     setAddedItemIds([]);
@@ -66,18 +93,33 @@ function AiUpload() {
 
     if (!file) return;
 
+    if (!file.type.startsWith("image/")) {
+      showToast("Please choose an image only", "danger");
+      e.target.value = "";
+      return;
+    }
+
     setImageFile(file);
     resetResultState();
 
     const url = URL.createObjectURL(file);
-    setPreviewUrl(url);
+
+    setPreviewUrl((oldUrl) => {
+      if (oldUrl) {
+        URL.revokeObjectURL(oldUrl);
+      }
+
+      return url;
+    });
+
+    e.target.value = "";
   }
 
   async function handleAnalyzeImage(e) {
     e.preventDefault();
 
     if (!imageFile) {
-      showToast("Please choose an image first", "danger");
+      showToast("Please choose or capture an image first", "danger");
       return;
     }
 
@@ -254,12 +296,62 @@ function AiUpload() {
                 <Form onSubmit={handleAnalyzeImage}>
                   <Form.Group className="mb-3">
                     <Form.Label>Food Image</Form.Label>
-                    <Form.Control
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      capture="environment"
-                    />
+
+                    {isMobile ? (
+                      <>
+                        <div className="d-flex gap-2">
+                          <Button
+                            type="button"
+                            variant="outline-success"
+                            className="w-50"
+                            disabled={loading}
+                            onClick={() => galleryInputRef.current?.click()}
+                          >
+                            Upload Image
+                          </Button>
+
+                          <Button
+                            type="button"
+                            variant="success"
+                            className="w-50"
+                            disabled={loading}
+                            onClick={() => cameraInputRef.current?.click()}
+                          >
+                            Take Photo
+                          </Button>
+                        </div>
+
+                        <input
+                          ref={galleryInputRef}
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                          hidden
+                        />
+
+                        <input
+                          ref={cameraInputRef}
+                          type="file"
+                          accept="image/*"
+                          capture="environment"
+                          onChange={handleImageChange}
+                          hidden
+                        />
+                      </>
+                    ) : (
+                      <Form.Control
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        disabled={loading}
+                      />
+                    )}
+
+                    {imageFile && (
+                      <p className="text-muted mt-2 mb-0">
+                        Selected: {imageFile.name}
+                      </p>
+                    )}
                   </Form.Group>
 
                   {previewUrl && (
