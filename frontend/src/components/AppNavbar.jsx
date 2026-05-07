@@ -79,7 +79,7 @@ function AppNavbar() {
           to="/"
           className="fw-bold d-flex align-items-center gap-2"
         >
-          Calories Checker
+          PortionLens
         </Navbar.Brand>
 
         <Navbar.Toggle aria-controls="main-navbar" />

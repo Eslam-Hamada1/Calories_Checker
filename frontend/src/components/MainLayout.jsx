@@ -3,6 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 
 import AppNavbar from "./AppNavbar";
+import Footer from "./Footer";
 
 function MainLayout() {
   const location = useLocation();
@@ -23,6 +24,8 @@ function MainLayout() {
           </motion.div>
         </Container>
       </main>
+      
+      <Footer />
     </>
   );
 }
