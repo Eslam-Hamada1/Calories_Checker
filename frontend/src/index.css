@@ -4,6 +4,12 @@
    THEME VARIABLES
 ========================= */
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 :root {
   --app-bg: #f4f7f5;
   --app-card: #ffffff;
@@ -93,9 +99,10 @@ textarea,
 ========================= */
 
 .app-page {
-  min-height: calc(100vh - 56px);
+  min-height: calc(100vh - 64px);
   padding-top: 28px;
   padding-bottom: 40px;
+  box-sizing: border-box;
   background: var(--app-bg);
   color: var(--app-text);
 }
